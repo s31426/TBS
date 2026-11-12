@@ -1,0 +1,253 @@
+================================================================================
+monitoring.json — opis ustawien (Linux Optimizer Monitoring)
+Plik produkcyjny: /etc/zabbix/monitoring.json
+================================================================================
+
+FORMAT
+------
+- JSON albo JSONC (komentarze // oraz /* ... */ sa dozwolone; LLD je wycina).
+- Generator (monitoring_generator.py) tworzy propozycje .example — po zmianach
+  w DEFAULTS w skrypcie wygeneruj ponownie i przejzyj recznie.
+
+JEDNOSTKI CZASU (Zabbix)
+------------------------
+s = sekundy, m = minuty, h = godziny, d = dni, w = tygodnie.
+Nie uzywaj „g” (godzina) — poprawnie: 1h.
+
+WAZNE: severity triggerow (HIGH / WARNING) oraz delay itemow (jak czesto
+Zabbix pyta) sa w TEMPLATE, nie w tym pliku.
+Tu ustawiasz: czy monitorowac i po jakim czasie uznac PROBLEM (problem_after).
+
+Default delay itemow w template: 1m (ping, port, logrt).
+
+
+================================================================================
+STRUKTURA GLOWNA
+================================================================================
+
+version
+  Numer wersji schematu (informacyjnie).
+
+description
+  Opis dowolny (komentarz dla czlowieka).
+
+optimizers[]
+  Lista instancji Optimizer na tym hoscie.
+
+
+================================================================================
+optimizers[] — jedna instancja
+================================================================================
+
+id
+  Identyfikator techniczny (np. optimizer17). Trafa do LLD jako {#OPTIMIZER}.
+
+name
+  Nazwa czytelna (np. Optimizer 17). {#OPTIMIZER_NAME}.
+
+log
+  Sciezka do events.log tej instancji (wymagana).
+  Przyklad: /var/opt/optimizer_java17/logs/events.log
+
+log_monitoring.sent
+  Monitorowanie linii logu: „Dane pomiarowe zostaly wyslane.”
+  - enabled (bool) — wlacza item/trigger sent
+  - problem_after (czas) — brak takiej linii przez ten czas => problem
+  Domyslnie (generator): enabled true, problem_after 1h
+  Gdy brak calej sekcji log_monitoring/sent: LLD traktuje sent jako wlaczone
+  (zachowanie wsteczne).
+
+groups[]
+  Grupy urzadzen / logiczne — patrz nizej.
+
+
+================================================================================
+groups[] — grupa
+================================================================================
+
+id
+  Id techniczne (np. modbus_sensor_1). {#GROUP}
+
+name
+  Nazwa (np. Modbus Sensor 1). {#GROUP_NAME}
+  Uzywana tez w local.ping[name,ip].
+
+type
+  Dozwolone wartosci (dokladnie te stringi):
+
+  "device"
+      Urzadzenie fizyczne z IP. Wymaga "address".
+      LLD: ping, ports[], device_query (gdy wlaczone w log).
+
+  "logical"
+      Grupa logiczna bez IP (np. MQTT / obiekty bez adresu).
+      LLD: zwykle tylko series + received (bez ping/port/device_query).
+
+address
+  IP urzadzenia (tylko type=device). {#IP}
+
+series[]
+  Lista identyfikatorow serii (stringi), np.
+  "pl.monopolis.lodz.B.RGB3_RnN1_QG1.real_power"
+  Pusta tablica [] = brak serii received (nawet gdy received.enabled=true).
+
+
+--------------------------------------------------------------------------------
+groups[].log — monitoring logow per grupa
+--------------------------------------------------------------------------------
+
+Jesli BRAK calej sekcji "log":
+  - received = WYLACZONE
+  - device_query = WYLACZONE
+  Nie trzeba pisac enabled:false — wystarczy pominac "log".
+
+Jesli "series": [] i nie monitorujesz logow:
+  Mozesz calkowicie pominac "log" — efekt ten sam.
+
+log.received
+  Linie: „Odebralem dane: <seria>:”
+  - enabled
+  - mode
+      "each"  (domyslnie) — osobny item/trigger na kazda serie z series[]
+      "group" — JEDEN item/trigger na cala grupe (regex OR ze wszystkich series[])
+                Serie nadal sa w JSON (do device_query / dokumentacji),
+                ale LLD nie tworzy per-seria received.
+  - problem_after
+  Domyslnie generator: enabled false dla type=device, true dla pozostałych;
+                       mode each, problem_after 1h
+
+log.device_query   (zalecana nazwa)
+  Alias wsteczny: log.poll_error (LLD nadal honoruje)
+  Linie: „Odpytanie fizycznego urzadzenia … nie powiodlo sie”
+  Regex sklada sie z series[] grupy (POLL_SERIES_REGEX).
+  - enabled
+  - problem_after
+  Jeden item/trigger na grupe device (nie per seria).
+  Domyslnie generator: enabled true tylko dla type=device, problem_after 1h
+
+
+--------------------------------------------------------------------------------
+groups[].ping — ICMP z agenta (local.ping)
+--------------------------------------------------------------------------------
+
+Tylko dla type=device + address.
+
+- enabled
+- problem_after — max(ping)=0 przez ten czas => problem
+
+Domyslnie generator:
+  - problem_after 15m
+  - enabled false, jesli grupa ma niepusta series[] (sa dane w logu)
+  - enabled true, jesli series[] puste (tylko ping/port)
+Delay zbierania wartosci: template (1m).
+
+Brak sekcji ping na device: LLD i tak tworzy wiersz group z ping.enabled=true.
+Wylacz: "ping": { "enabled": false }
+
+
+--------------------------------------------------------------------------------
+groups[].ports[] — TCP z agenta (net.tcp.service)
+--------------------------------------------------------------------------------
+
+- id, name     — etykiety (np. modbus / Modbus TCP)
+- port         — numer portu (wymagany)
+- enabled
+- problem_after
+
+Domyslnie generator:
+  - problem_after 15m
+  - enabled false, jesli grupa ma serie; true gdy series puste
+Delay zbierania: template (1m).
+
+Pusta ports: [] = brak checkow TCP.
+Brak ports[] = to samo.
+
+
+================================================================================
+NAZWY TRIGGEROW (TEMPLATE)
+================================================================================
+
+sent:     Optimizer {#OPTIMIZER_NAME}: brak wysylania danych pomiarowych
+ping:     {#GROUP_NAME}: urzadzenie nie odpowiada na ping
+port:     {#GROUP_NAME}: {#PORT_NAME} {#PORT} niedostepny
+query:    {#GROUP_NAME}: blad odpytania urzadzenia
+received each:  {#GROUP_NAME}: brak danych dla {#SERIES}
+received group: {#GROUP_NAME}: brak danych
+
+
+================================================================================
+CO TWORZY LLD (skrot)
+================================================================================
+
+optimizer.lld[instances]       -> sent (per optimizer)
+optimizer.lld[groups]          -> ping + device_query (per device group)
+optimizer.lld[ports]           -> net.tcp.service (per enabled port)
+optimizer.lld[received]        -> received per seria (mode=each)
+optimizer.lld[received_group]  -> received jedna na grupe (mode=group)
+
+Ping:   local.ping[{#GROUP_NAME},{#IP}]     (UserParameter na hoscie)
+Port:   net.tcp.service[tcp,{#IP},{#PORT}]  (wbudowany klucz agenta)
+
+
+================================================================================
+PRZYKLAD: tylko ping + port, bez serii i bez logow
+================================================================================
+
+{
+  "version": 1.5,
+  "optimizers": [
+    {
+      "id": "optimizer17",
+      "name": "Optimizer 17",
+      "log": "/var/opt/optimizer_java17/logs/events.log",
+      "log_monitoring": {
+        "sent": { "enabled": false }
+      },
+      "groups": [
+        {
+          "id": "modbus_sensor_11",
+          "name": "Modbus Sensor 11",
+          "type": "device",
+          "address": "192.168.0.225",
+          "series": [],
+          "ping": {
+            "enabled": true,
+            "problem_after": "15m"
+          },
+          "ports": [
+            {
+              "id": "modbus",
+              "name": "Modbus TCP",
+              "port": 503,
+              "enabled": true,
+              "problem_after": "15m"
+            }
+          ]
+        }
+      ]
+    }
+  ]
+}
+
+// Brak sekcji "log" => brak received i brak device_query.
+
+
+================================================================================
+SEVERITY I DELAY (TEMPLATE)
+================================================================================
+
+W YAML template (nie w monitoring.json):
+  Severity: sent/ping/port/received = HIGH; device_query = WARNING
+  Delay itemow: obecnie 1m
+
+Zmiana = edycja / re-import template.
+
+
+================================================================================
+DOMYSLNE GENERATORA (monitoring_generator.py -> DEFAULTS)
+================================================================================
+
+sent_problem_after   = 1h
+log_problem_after    = 1h     (received + device_query)
+ping_problem_after   = 15m
+port_problem_after   = 15m

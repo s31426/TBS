@@ -1,0 +1,590 @@
+{
+  "version": 1.5,
+  "description": "PROPOZYCJA - przejrzyj ręcznie przed zapisaniem jako /etc/zabbix/monitoring.json. Grupy logiczne są ustalane na podstawie struktury drzewa global.xml, bez prefixów value_id.",
+  "optimizers": [
+    {
+      "id": "optimizer17",
+      "name": "Optimizer 17",
+      "log": "/var/opt/optimizer_java17/logs/events.log",
+      "log_monitoring": {
+        "sent": {
+          "enabled": true,
+          "problem_after": "10m"
+        }
+      },
+      "groups": [
+        {
+          "id": "modbus_sensor_1",
+          "name": "Modbus Sensor 1",
+          "type": "device",
+          "log": {
+            "received": {
+              "enabled": true,
+              "problem_after": "10m"
+            },
+            "poll_error": {
+              "enabled": true,
+              "problem_after": "10m"
+            }
+          },
+          "series": [
+            "pl.monopolis.lodz.B.RGB3_RnN1_QG1.power_factor",
+            "pl.monopolis.lodz.B.RGB3_RnN1_QG1.reactive_energy_delivered",
+            "pl.monopolis.lodz.B.RGB3_RnN1_QG1.reactive_energy_received",
+            "pl.monopolis.lodz.B.RGB3_RnN1_QG1.reactive_power",
+            "pl.monopolis.lodz.B.RGB3_RnN1_QG1.real_energy",
+            "pl.monopolis.lodz.B.RGB3_RnN1_QG1.real_power",
+            "pl.monopolis.lodz.B.RGB3_RnN2_QG2.power_factor",
+            "pl.monopolis.lodz.B.RGB3_RnN2_QG2.reactive_energy_delivered",
+            "pl.monopolis.lodz.B.RGB3_RnN2_QG2.reactive_energy_received",
+            "pl.monopolis.lodz.B.RGB3_RnN2_QG2.reactive_power",
+            "pl.monopolis.lodz.B.RGB3_RnN2_QG2.real_energy",
+            "pl.monopolis.lodz.B.RGB3_RnN2_QG2.real_power"
+          ],
+          "address": "192.168.0.22",
+          "ping": {
+            "enabled": true,
+            "problem_after": "5m"
+          },
+          "ports": [
+            {
+              "id": "modbus",
+              "name": "Modbus TCP",
+              "port": 502,
+              "enabled": true,
+              "problem_after": "5m"
+            }
+          ]
+        },
+        {
+          "id": "modbus_sensor_10",
+          "name": "Modbus Sensor 10",
+          "type": "device",
+          "log": {
+            "received": {
+              "enabled": true,
+              "problem_after": "10m"
+            },
+            "poll_error": {
+              "enabled": true,
+              "problem_after": "10m"
+            }
+          },
+          "series": [
+            "pl.monopolis.lodz.SVG_B4_QG2.Fault_word_1",
+            "pl.monopolis.lodz.SVG_B4_QG2.Fault_word_2",
+            "pl.monopolis.lodz.SVG_B4_QG2.Fault_word_3",
+            "pl.monopolis.lodz.SVG_B4_QG2.Phase_A_grid_side_DPF",
+            "pl.monopolis.lodz.SVG_B4_QG2.Phase_A_grid_side_PF",
+            "pl.monopolis.lodz.SVG_B4_QG2.Phase_A_grid_side_reactive_power",
+            "pl.monopolis.lodz.SVG_B4_QG2.Phase_A_load_side_DPF",
+            "pl.monopolis.lodz.SVG_B4_QG2.Phase_A_load_side_PF",
+            "pl.monopolis.lodz.SVG_B4_QG2.Phase_A_load_side_reactive_power",
+            "pl.monopolis.lodz.SVG_B4_QG2.Phase_B_grid_side_DPF",
+            "pl.monopolis.lodz.SVG_B4_QG2.Phase_B_grid_side_PF",
+            "pl.monopolis.lodz.SVG_B4_QG2.Phase_B_grid_side_reactive_power",
+            "pl.monopolis.lodz.SVG_B4_QG2.Phase_B_load_side_DPF",
+            "pl.monopolis.lodz.SVG_B4_QG2.Phase_B_load_side_PF",
+            "pl.monopolis.lodz.SVG_B4_QG2.Phase_B_load_side_reactive_power",
+            "pl.monopolis.lodz.SVG_B4_QG2.Phase_C_grid_side_DPF",
+            "pl.monopolis.lodz.SVG_B4_QG2.Phase_C_grid_side_PF",
+            "pl.monopolis.lodz.SVG_B4_QG2.Phase_C_grid_side_reactive_power",
+            "pl.monopolis.lodz.SVG_B4_QG2.Phase_C_load_side_DPF",
+            "pl.monopolis.lodz.SVG_B4_QG2.Phase_C_load_side_PF",
+            "pl.monopolis.lodz.SVG_B4_QG2.Phase_C_load_side_reactive_power",
+            "pl.monopolis.lodz.SVG_B4_QG2.Temperature0",
+            "pl.monopolis.lodz.SVG_B4_QG2.Temperature1",
+            "pl.monopolis.lodz.SVG_B4_QG2.Temperature2",
+            "pl.monopolis.lodz.SVG_B4_QG2.Temperature3",
+            "pl.monopolis.lodz.SVG_B4_QG2.Temperature4",
+            "pl.monopolis.lodz.SVG_B4_QG2.Temperature5",
+            "pl.monopolis.lodz.SVG_B4_QG2.reimbursement_model"
+          ],
+          "address": "10.1.197.10",
+          "ping": {
+            "enabled": true,
+            "problem_after": "5m"
+          },
+          "ports": [
+            {
+              "id": "modbus",
+              "name": "Modbus TCP",
+              "port": 4001,
+              "enabled": true,
+              "problem_after": "5m"
+            }
+          ]
+        },
+        {
+          "id": "modbus_sensor_11",
+          "name": "Modbus Sensor 11",
+          "type": "device",
+          "log": {
+            "received": {
+              "enabled": true,
+              "problem_after": "10m"
+            },
+            "poll_error": {
+              "enabled": true,
+              "problem_after": "10m"
+            }
+          },
+          "series": [
+            "pl.monopolis.lodz.SVG_B5_QG2.Fault_word_1",
+            "pl.monopolis.lodz.SVG_B5_QG2.Fault_word_2",
+            "pl.monopolis.lodz.SVG_B5_QG2.Fault_word_3",
+            "pl.monopolis.lodz.SVG_B5_QG2.Phase_A_grid_side_DPF",
+            "pl.monopolis.lodz.SVG_B5_QG2.Phase_A_grid_side_PF",
+            "pl.monopolis.lodz.SVG_B5_QG2.Phase_A_grid_side_reactive_power",
+            "pl.monopolis.lodz.SVG_B5_QG2.Phase_A_load_side_DPF",
+            "pl.monopolis.lodz.SVG_B5_QG2.Phase_A_load_side_PF",
+            "pl.monopolis.lodz.SVG_B5_QG2.Phase_A_load_side_reactive_power",
+            "pl.monopolis.lodz.SVG_B5_QG2.Phase_B_grid_side_DPF",
+            "pl.monopolis.lodz.SVG_B5_QG2.Phase_B_grid_side_PF",
+            "pl.monopolis.lodz.SVG_B5_QG2.Phase_B_grid_side_reactive_power",
+            "pl.monopolis.lodz.SVG_B5_QG2.Phase_B_load_side_DPF",
+            "pl.monopolis.lodz.SVG_B5_QG2.Phase_B_load_side_PF",
+            "pl.monopolis.lodz.SVG_B5_QG2.Phase_B_load_side_reactive_power",
+            "pl.monopolis.lodz.SVG_B5_QG2.Phase_C_grid_side_DPF",
+            "pl.monopolis.lodz.SVG_B5_QG2.Phase_C_grid_side_PF",
+            "pl.monopolis.lodz.SVG_B5_QG2.Phase_C_grid_side_reactive_power",
+            "pl.monopolis.lodz.SVG_B5_QG2.Phase_C_load_side_DPF",
+            "pl.monopolis.lodz.SVG_B5_QG2.Phase_C_load_side_PF",
+            "pl.monopolis.lodz.SVG_B5_QG2.Phase_C_load_side_reactive_power",
+            "pl.monopolis.lodz.SVG_B5_QG2.Temperature0",
+            "pl.monopolis.lodz.SVG_B5_QG2.Temperature1",
+            "pl.monopolis.lodz.SVG_B5_QG2.Temperature2",
+            "pl.monopolis.lodz.SVG_B5_QG2.Temperature3",
+            "pl.monopolis.lodz.SVG_B5_QG2.Temperature4",
+            "pl.monopolis.lodz.SVG_B5_QG2.Temperature5",
+            "pl.monopolis.lodz.SVG_B5_QG2.reimbursement_model"
+          ],
+          "address": "192.168.0.225",
+          "ping": {
+            "enabled": true,
+            "problem_after": "5m"
+          },
+          "ports": [
+            {
+              "id": "modbus",
+              "name": "Modbus TCP",
+              "port": 503,
+              "enabled": true,
+              "problem_after": "5m"
+            }
+          ]
+        },
+        {
+          "id": "modbus_sensor_2",
+          "name": "Modbus Sensor 2",
+          "type": "device",
+          "log": {
+            "received": {
+              "enabled": true,
+              "problem_after": "10m"
+            },
+            "poll_error": {
+              "enabled": true,
+              "problem_after": "10m"
+            }
+          },
+          "series": [
+            "pl.monopolis.lodz.B.TRAFO_QG1_B2_PPE501.power_factor",
+            "pl.monopolis.lodz.B.TRAFO_QG1_B2_PPE501.reactive_energy_delivered",
+            "pl.monopolis.lodz.B.TRAFO_QG1_B2_PPE501.reactive_energy_received",
+            "pl.monopolis.lodz.B.TRAFO_QG1_B2_PPE501.reactive_power",
+            "pl.monopolis.lodz.B.TRAFO_QG1_B2_PPE501.real_energy",
+            "pl.monopolis.lodz.B.TRAFO_QG1_B2_PPE501.real_power",
+            "pl.monopolis.lodz.B.TRAFO_QG2_B5_PPE606.power_factor",
+            "pl.monopolis.lodz.B.TRAFO_QG2_B5_PPE606.reactive_energy_delivered",
+            "pl.monopolis.lodz.B.TRAFO_QG2_B5_PPE606.reactive_energy_received",
+            "pl.monopolis.lodz.B.TRAFO_QG2_B5_PPE606.reactive_power",
+            "pl.monopolis.lodz.B.TRAFO_QG2_B5_PPE606.real_energy",
+            "pl.monopolis.lodz.B.TRAFO_QG2_B5_PPE606.real_power"
+          ],
+          "address": "192.168.0.12",
+          "ping": {
+            "enabled": true,
+            "problem_after": "5m"
+          },
+          "ports": [
+            {
+              "id": "modbus",
+              "name": "Modbus TCP",
+              "port": 502,
+              "enabled": true,
+              "problem_after": "5m"
+            }
+          ]
+        },
+        {
+          "id": "modbus_sensor_3",
+          "name": "Modbus Sensor 3",
+          "type": "device",
+          "log": {
+            "received": {
+              "enabled": true,
+              "problem_after": "10m"
+            },
+            "poll_error": {
+              "enabled": true,
+              "problem_after": "10m"
+            }
+          },
+          "series": [
+            "pl.monopolis.lodz.B.AGR04.03.temp_zad_set"
+          ],
+          "address": "192.168.0.41",
+          "ping": {
+            "enabled": true,
+            "problem_after": "5m"
+          },
+          "ports": [
+            {
+              "id": "modbus",
+              "name": "Modbus TCP",
+              "port": 502,
+              "enabled": true,
+              "problem_after": "5m"
+            }
+          ]
+        },
+        {
+          "id": "modbus_sensor_4",
+          "name": "Modbus Sensor 4",
+          "type": "device",
+          "log": {
+            "received": {
+              "enabled": true,
+              "problem_after": "10m"
+            },
+            "poll_error": {
+              "enabled": true,
+              "problem_after": "10m"
+            }
+          },
+          "series": [
+            "pl.monopolis.lodz.Nr1Wr1_B2.chlodnica_get",
+            "pl.monopolis.lodz.Nr1Wr1_B2.nagrzew_get",
+            "pl.monopolis.lodz.Nr1Wr1_B2.odzysk_mocy_get",
+            "pl.monopolis.lodz.Nr1Wr1_B2.temp_naw_get",
+            "pl.monopolis.lodz.Nr1Wr1_B2.temp_wyw_get",
+            "pl.monopolis.lodz.Nr1Wr1_B2.temp_zad_set",
+            "pl.monopolis.lodz.Nr1Wr1_B2.tryb_pracy_set",
+            "pl.monopolis.lodz.Nr1Wr1_B2.went_naw_get",
+            "pl.monopolis.lodz.Nr1Wr1_B2.went_naw_moc_get",
+            "pl.monopolis.lodz.Nr1Wr1_B2.went_naw_procent_get",
+            "pl.monopolis.lodz.Nr1Wr1_B2.went_wyw_get",
+            "pl.monopolis.lodz.Nr1Wr1_B2.went_wyw_moc_get",
+            "pl.monopolis.lodz.Nr1Wr1_B2.went_wyw_procent_get",
+            "pl.monopolis.lodz.Nr1Wr1_B2.wyd_naw_nisk_obr_set",
+            "pl.monopolis.lodz.Nr1Wr1_B2.wyd_naw_wys_obr_set",
+            "pl.monopolis.lodz.Nr1Wr1_B2.wyd_wyw_nisk_obr_set",
+            "pl.monopolis.lodz.Nr1Wr1_B2.wyd_wyw_wys_obr_set",
+            "pl.monopolis.lodz.Nr1Wr1_B2.wymienik_get"
+          ],
+          "address": "192.168.0.220",
+          "ping": {
+            "enabled": true,
+            "problem_after": "5m"
+          },
+          "ports": [
+            {
+              "id": "modbus",
+              "name": "Modbus TCP",
+              "port": 502,
+              "enabled": true,
+              "problem_after": "5m"
+            }
+          ]
+        },
+        {
+          "id": "modbus_sensor_5",
+          "name": "Modbus Sensor 5",
+          "type": "device",
+          "log": {
+            "received": {
+              "enabled": true,
+              "problem_after": "10m"
+            },
+            "poll_error": {
+              "enabled": true,
+              "problem_after": "10m"
+            }
+          },
+          "series": [
+            "pl.monopolis.lodz.Nk1_B2.temp_naw_get",
+            "pl.monopolis.lodz.Nk1_B2.temp_zad_set",
+            "pl.monopolis.lodz.Nk1_B2.tryb_pracy_set",
+            "pl.monopolis.lodz.Nk1_B2.went_naw_get",
+            "pl.monopolis.lodz.Nk1_B2.went_naw_moc_get",
+            "pl.monopolis.lodz.Nk1_B2.went_naw_procent_get",
+            "pl.monopolis.lodz.Nk1_B2.wyd_naw_nisk_obr_set",
+            "pl.monopolis.lodz.Nk1_B2.wyd_naw_wys_obr_set"
+          ],
+          "address": "192.168.0.219",
+          "ping": {
+            "enabled": true,
+            "problem_after": "5m"
+          },
+          "ports": [
+            {
+              "id": "modbus",
+              "name": "Modbus TCP",
+              "port": 502,
+              "enabled": true,
+              "problem_after": "5m"
+            }
+          ]
+        },
+        {
+          "id": "modbus_sensor_6",
+          "name": "Modbus Sensor 6",
+          "type": "device",
+          "log": {
+            "received": {
+              "enabled": true,
+              "problem_after": "10m"
+            },
+            "poll_error": {
+              "enabled": true,
+              "problem_after": "10m"
+            }
+          },
+          "series": [
+            "pl.monopolis.lodz.N1W1Teatr_B5.chlodnica_get",
+            "pl.monopolis.lodz.N1W1Teatr_B5.nagrzew_get",
+            "pl.monopolis.lodz.N1W1Teatr_B5.odzysk_mocy_get",
+            "pl.monopolis.lodz.N1W1Teatr_B5.temp_naw_get",
+            "pl.monopolis.lodz.N1W1Teatr_B5.temp_wyw_get",
+            "pl.monopolis.lodz.N1W1Teatr_B5.temp_zad_set",
+            "pl.monopolis.lodz.N1W1Teatr_B5.tryb_pracy_set",
+            "pl.monopolis.lodz.N1W1Teatr_B5.went_naw_get",
+            "pl.monopolis.lodz.N1W1Teatr_B5.went_naw_moc_get",
+            "pl.monopolis.lodz.N1W1Teatr_B5.went_naw_procent_get",
+            "pl.monopolis.lodz.N1W1Teatr_B5.went_wyw_get",
+            "pl.monopolis.lodz.N1W1Teatr_B5.went_wyw_moc_get",
+            "pl.monopolis.lodz.N1W1Teatr_B5.went_wyw_procent_get",
+            "pl.monopolis.lodz.N1W1Teatr_B5.wyd_naw_nisk_obr_set",
+            "pl.monopolis.lodz.N1W1Teatr_B5.wyd_naw_wys_obr_set",
+            "pl.monopolis.lodz.N1W1Teatr_B5.wyd_wyw_nisk_obr_set",
+            "pl.monopolis.lodz.N1W1Teatr_B5.wyd_wyw_wys_obr_set",
+            "pl.monopolis.lodz.N1W1Teatr_B5.wymienik_get"
+          ],
+          "address": "192.168.0.216",
+          "ping": {
+            "enabled": true,
+            "problem_after": "5m"
+          },
+          "ports": [
+            {
+              "id": "modbus",
+              "name": "Modbus TCP",
+              "port": 502,
+              "enabled": true,
+              "problem_after": "5m"
+            }
+          ]
+        },
+        {
+          "id": "modbus_sensor_7",
+          "name": "Modbus Sensor 7",
+          "type": "device",
+          "log": {
+            "received": {
+              "enabled": true,
+              "problem_after": "10m"
+            },
+            "poll_error": {
+              "enabled": true,
+              "problem_after": "10m"
+            }
+          },
+          "series": [
+            "pl.monopolis.lodz.Nr1Wr1_B6.chlodnica_get",
+            "pl.monopolis.lodz.Nr1Wr1_B6.nagrzew_get",
+            "pl.monopolis.lodz.Nr1Wr1_B6.odzysk_mocy_get",
+            "pl.monopolis.lodz.Nr1Wr1_B6.temp_naw_get",
+            "pl.monopolis.lodz.Nr1Wr1_B6.temp_wyw_get",
+            "pl.monopolis.lodz.Nr1Wr1_B6.temp_zad_set",
+            "pl.monopolis.lodz.Nr1Wr1_B6.tryb_pracy_set",
+            "pl.monopolis.lodz.Nr1Wr1_B6.went_naw_get",
+            "pl.monopolis.lodz.Nr1Wr1_B6.went_naw_moc_get",
+            "pl.monopolis.lodz.Nr1Wr1_B6.went_naw_procent_get",
+            "pl.monopolis.lodz.Nr1Wr1_B6.went_wyw_get",
+            "pl.monopolis.lodz.Nr1Wr1_B6.went_wyw_moc_get",
+            "pl.monopolis.lodz.Nr1Wr1_B6.went_wyw_procent_get",
+            "pl.monopolis.lodz.Nr1Wr1_B6.wyd_naw_nisk_obr_set",
+            "pl.monopolis.lodz.Nr1Wr1_B6.wyd_naw_wys_obr_set",
+            "pl.monopolis.lodz.Nr1Wr1_B6.wyd_wyw_nisk_obr_set",
+            "pl.monopolis.lodz.Nr1Wr1_B6.wyd_wyw_wys_obr_set",
+            "pl.monopolis.lodz.Nr1Wr1_B6.wymienik_get"
+          ],
+          "address": "192.168.0.217",
+          "ping": {
+            "enabled": true,
+            "problem_after": "5m"
+          },
+          "ports": [
+            {
+              "id": "modbus",
+              "name": "Modbus TCP",
+              "port": 502,
+              "enabled": true,
+              "problem_after": "5m"
+            }
+          ]
+        },
+        {
+          "id": "modbus_sensor_8",
+          "name": "Modbus Sensor 8",
+          "type": "device",
+          "log": {
+            "received": {
+              "enabled": true,
+              "problem_after": "10m"
+            },
+            "poll_error": {
+              "enabled": true,
+              "problem_after": "10m"
+            }
+          },
+          "series": [
+            "pl.monopolis.lodz.N1W1Mono_B2.chlodnica_get",
+            "pl.monopolis.lodz.N1W1Mono_B2.nagrzew_get",
+            "pl.monopolis.lodz.N1W1Mono_B2.odzysk_mocy_get",
+            "pl.monopolis.lodz.N1W1Mono_B2.temp_naw_get",
+            "pl.monopolis.lodz.N1W1Mono_B2.temp_wyw_get",
+            "pl.monopolis.lodz.N1W1Mono_B2.temp_zad_set",
+            "pl.monopolis.lodz.N1W1Mono_B2.tryb_pracy_set",
+            "pl.monopolis.lodz.N1W1Mono_B2.went_naw_get",
+            "pl.monopolis.lodz.N1W1Mono_B2.went_naw_moc_get",
+            "pl.monopolis.lodz.N1W1Mono_B2.went_naw_procent_get",
+            "pl.monopolis.lodz.N1W1Mono_B2.went_wyw_get",
+            "pl.monopolis.lodz.N1W1Mono_B2.went_wyw_moc_get",
+            "pl.monopolis.lodz.N1W1Mono_B2.went_wyw_procent_get",
+            "pl.monopolis.lodz.N1W1Mono_B2.wyd_naw_nisk_obr_set",
+            "pl.monopolis.lodz.N1W1Mono_B2.wyd_naw_wys_obr_set",
+            "pl.monopolis.lodz.N1W1Mono_B2.wyd_wyw_nisk_obr_set",
+            "pl.monopolis.lodz.N1W1Mono_B2.wyd_wyw_wys_obr_set",
+            "pl.monopolis.lodz.N1W1Mono_B2.wymienik_get",
+            "pl.monopolis.lodz.Nk1_B6.chlodnica_get",
+            "pl.monopolis.lodz.Nk1_B6.nagrzew_get",
+            "pl.monopolis.lodz.Nk1_B6.odzysk_mocy_get",
+            "pl.monopolis.lodz.Nk1_B6.temp_naw_get",
+            "pl.monopolis.lodz.Nk1_B6.temp_wyw_get",
+            "pl.monopolis.lodz.Nk1_B6.temp_zad_set",
+            "pl.monopolis.lodz.Nk1_B6.tryb_pracy_set",
+            "pl.monopolis.lodz.Nk1_B6.went_naw_get",
+            "pl.monopolis.lodz.Nk1_B6.went_naw_moc_get",
+            "pl.monopolis.lodz.Nk1_B6.went_naw_procent_get",
+            "pl.monopolis.lodz.Nk1_B6.went_wyw_get",
+            "pl.monopolis.lodz.Nk1_B6.went_wyw_moc_get",
+            "pl.monopolis.lodz.Nk1_B6.went_wyw_procent_get",
+            "pl.monopolis.lodz.Nk1_B6.wyd_naw_nisk_obr_set",
+            "pl.monopolis.lodz.Nk1_B6.wyd_naw_wys_obr_set",
+            "pl.monopolis.lodz.Nk1_B6.wyd_wyw_nisk_obr_set",
+            "pl.monopolis.lodz.Nk1_B6.wyd_wyw_wys_obr_set",
+            "pl.monopolis.lodz.Nk1_B6.wymienik_get"
+          ],
+          "address": "192.168.0.218",
+          "ping": {
+            "enabled": true,
+            "problem_after": "5m"
+          },
+          "ports": [
+            {
+              "id": "modbus",
+              "name": "Modbus TCP",
+              "port": 502,
+              "enabled": true,
+              "problem_after": "5m"
+            }
+          ]
+        },
+        {
+          "id": "modbus_sensor_9",
+          "name": "Modbus Sensor 9",
+          "type": "device",
+          "log": {
+            "received": {
+              "enabled": true,
+              "problem_after": "10m"
+            },
+            "poll_error": {
+              "enabled": true,
+              "problem_after": "10m"
+            }
+          },
+          "series": [
+            "pl.monopolis.lodz.N1W1Lokale_B5.chlodnica_get",
+            "pl.monopolis.lodz.N1W1Lokale_B5.nagrzew_get",
+            "pl.monopolis.lodz.N1W1Lokale_B5.odzysk_mocy_get",
+            "pl.monopolis.lodz.N1W1Lokale_B5.temp_naw_get",
+            "pl.monopolis.lodz.N1W1Lokale_B5.temp_wyw_get",
+            "pl.monopolis.lodz.N1W1Lokale_B5.temp_zad_set",
+            "pl.monopolis.lodz.N1W1Lokale_B5.tryb_pracy_set",
+            "pl.monopolis.lodz.N1W1Lokale_B5.went_naw_get",
+            "pl.monopolis.lodz.N1W1Lokale_B5.went_naw_moc_get",
+            "pl.monopolis.lodz.N1W1Lokale_B5.went_naw_procent_get",
+            "pl.monopolis.lodz.N1W1Lokale_B5.went_wyw_get",
+            "pl.monopolis.lodz.N1W1Lokale_B5.went_wyw_moc_get",
+            "pl.monopolis.lodz.N1W1Lokale_B5.went_wyw_procent_get",
+            "pl.monopolis.lodz.N1W1Lokale_B5.wyd_naw_nisk_obr_set",
+            "pl.monopolis.lodz.N1W1Lokale_B5.wyd_naw_wys_obr_set",
+            "pl.monopolis.lodz.N1W1Lokale_B5.wyd_wyw_nisk_obr_set",
+            "pl.monopolis.lodz.N1W1Lokale_B5.wyd_wyw_wys_obr_set",
+            "pl.monopolis.lodz.N1W1Lokale_B5.wymienik_get"
+          ],
+          "address": "192.168.0.213",
+          "ping": {
+            "enabled": true,
+            "problem_after": "5m"
+          },
+          "ports": [
+            {
+              "id": "modbus",
+              "name": "Modbus TCP",
+              "port": 502,
+              "enabled": true,
+              "problem_after": "5m"
+            }
+          ]
+        },
+        {
+          "id": "logical_mqtt_controller_objects",
+          "name": "mqtt_controller_objects",
+          "type": "logical",
+          "log": {
+            "received": {
+              "enabled": true,
+              "problem_after": "10m"
+            },
+            "poll_error": {
+              "enabled": false,
+              "problem_after": "10m"
+            }
+          },
+          "series": [
+            "pl.monopolis.lodz.LRM03.co2",
+            "pl.monopolis.lodz.LRM03.humidity",
+            "pl.monopolis.lodz.LRM03.temp",
+            "pl.monopolis.lodz.LRM06.co2",
+            "pl.monopolis.lodz.LRM06.humidity",
+            "pl.monopolis.lodz.LRM06.temp",
+            "pl.monopolis.lodz.prognoza.temp_zewn",
+            "pl.monopolis.lodz.prognoza.temp_zewn_24h_avg",
+            "pl.monopolis.lodz.prognoza.temp_zewn_3h",
+            "pl.monopolis.lodz.prognoza.temp_zewn_6h",
+            "pl.monopolis.lodz.prognoza.uvi",
+            "pl.monopolis.lodz.prognoza.uvi_3h",
+            "pl.monopolis.lodz.prognoza.uvi_6h",
+            "pl.monopolis.lodz.sila_1h",
+            "pl.monopolis.lodz.sila_2h",
+            "pl.monopolis.lodz.sila_aktualna"
+          ]
+        }
+      ]
+    }
+  ]
+}

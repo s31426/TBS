@@ -1,0 +1,245 @@
+zabbix_export:
+  version: '7.4'
+  template_groups:
+  - uuid: 710be2a4f313442ca7fef5d6ad6c523f
+    name: Linux VPP apps
+  templates:
+  - uuid: f9bd29d4d76349f5812a0484d3a8ff53
+    template: Linux Optimizer Monitoring
+    name: Linux Optimizer Monitoring
+    description: 'Monitoring wielu instancji Optimizer na jednym hoście.
+
+      monitoring.json jest jedynym źródłem konfiguracji.
+
+      Cztery reguły LLD (bez override): instances / groups / ports / received.
+      Każda reguła ma tylko właściwe prototypy — unikamy itemów z niepodstawionymi
+      makro {#PORT} itd.
+
+      Trigger sent jest zależnością dla received i poll_error (match po nazwie
+      i expression na hoście). SENT_* jest kopiowane do wierszy group/series
+      właśnie pod te zależności.
+
+      Wszystkie triggery zależą od „Zabbix agent is not available”
+      na template Linux by Zabbix agent active
+      (nodata(/Linux by Zabbix agent active/agent.ping,{$AGENT.NODATA_TIMEOUT})=1).
+      W tej instalacji trigger nie ma prefiksu „Linux:”. Na hoście zostaje
+      tylko Linux by Zabbix agent active.
+
+      Ping i porty: Zabbix agent (active) z hosta.
+      nodata sent/received: tylko po pierwszej wartości w historii
+      (length(last(...))>0).
+
+      '
+    groups:
+    - name: Linux VPP apps
+    discovery_rules:
+    - uuid: 75f73a8ec77247f790e60babf4528a3a
+      name: Optimizer instances discovery
+      type: ZABBIX_ACTIVE
+      key: optimizer.lld[instances]
+      delay: 30m
+      lifetime: 7d
+      item_prototypes:
+      - uuid: 759911751c8d439fa889a7033eaa6451
+        name: 'Optimizer {#OPTIMIZER_NAME}: dane pomiarowe wysłane'
+        type: ZABBIX_ACTIVE
+        key: logrt[{#LOG_FILE},"Dane pomiarowe zostały wysłane\.",,,skip]
+        delay: 1m
+        history: 7d
+        trends: '0'
+        value_type: LOG
+        tags:
+        - tag: application
+          value: optimizer
+        - tag: monitoring
+          value: sent
+      trigger_prototypes:
+      - uuid: 684d32b7e2704b879d0cf75ef10213c8
+        expression: '({#SENT_ENABLED}=1 and nodata(/Linux Optimizer Monitoring/logrt[{#LOG_FILE},"Dane pomiarowe zostały wysłane\.",,,skip],{#SENT_AFTER})=1 and length(last(/Linux Optimizer Monitoring/logrt[{#LOG_FILE},"Dane pomiarowe zostały wysłane\.",,,skip]))>0)'
+        name: 'Optimizer {#OPTIMIZER_NAME}: brak wysyłania danych pomiarowych'
+        priority: HIGH
+        manual_close: 'YES'
+        tags:
+        - tag: application
+          value: optimizer
+        - tag: monitoring
+          value: sent
+        dependencies:
+        - name: 'Zabbix agent is not available'
+          expression: 'nodata(/Linux by Zabbix agent active/agent.ping,{$AGENT.NODATA_TIMEOUT})=1'
+    - uuid: dfedcaa6adfd4f5ea4cb9905043f6990
+      name: Optimizer groups discovery
+      type: ZABBIX_ACTIVE
+      key: optimizer.lld[groups]
+      delay: 30m
+      lifetime: 7d
+      item_prototypes:
+      - uuid: a5e03c5ef40b451a9997f221cf21befb
+        name: '{#OPTIMIZER_NAME} / {#GROUP_NAME}: ping'
+        type: ZABBIX_ACTIVE
+        key: 'local.ping[{#GROUP_NAME},{#IP}]'
+        delay: 1m
+        history: 7d
+        trends: 90d
+        value_type: UNSIGNED
+        tags:
+        - tag: application
+          value: optimizer
+        - tag: monitoring
+          value: ping
+      - uuid: b061ebcae8384b3d95913550f942b47e
+        name: '{#OPTIMIZER_NAME} / {#GROUP_NAME}: błąd odpytania (device_query)'
+        type: ZABBIX_ACTIVE
+        key: 'logrt[{#LOG_FILE},"(?#{#GROUP})Odpytanie fizycznego urządzenia.*({#POLL_SERIES_REGEX}).*nie powiodło się",,,skip]'
+        delay: 1m
+        history: 7d
+        trends: '0'
+        value_type: LOG
+        tags:
+        - tag: application
+          value: optimizer
+        - tag: monitoring
+          value: device_query
+      trigger_prototypes:
+      - uuid: e847e0c8a3ba4f6eb8d305eb3495993d
+        expression: '({#PING_ENABLED}=1 and max(/Linux Optimizer Monitoring/local.ping[{#GROUP_NAME},{#IP}],{#PING_AFTER})=0)'
+        name: '{#GROUP_NAME}: urządzenie nie odpowiada na ping'
+        priority: HIGH
+        manual_close: 'YES'
+        tags:
+        - tag: application
+          value: optimizer
+        - tag: monitoring
+          value: ping
+        dependencies:
+        - name: 'Zabbix agent is not available'
+          expression: 'nodata(/Linux by Zabbix agent active/agent.ping,{$AGENT.NODATA_TIMEOUT})=1'
+      - uuid: badd0c6814884a7d90ebe5b829d7fcc7
+        expression: '({#POLL_ENABLED}=1 and count(/Linux Optimizer Monitoring/logrt[{#LOG_FILE},"(?#{#GROUP})Odpytanie fizycznego urządzenia.*({#POLL_SERIES_REGEX}).*nie powiodło się",,,skip],{#POLL_AFTER})>0 and time()>=0)'
+        name: '{#GROUP_NAME}: błąd odpytania urządzenia'
+        priority: WARNING
+        manual_close: 'YES'
+        tags:
+        - tag: application
+          value: optimizer
+        - tag: monitoring
+          value: device_query
+        dependencies:
+        - name: 'Zabbix agent is not available'
+          expression: 'nodata(/Linux by Zabbix agent active/agent.ping,{$AGENT.NODATA_TIMEOUT})=1'
+        - name: 'Optimizer {#OPTIMIZER_NAME}: brak wysyłania danych pomiarowych'
+          expression: '({#SENT_ENABLED}=1 and nodata(/Linux Optimizer Monitoring/logrt[{#LOG_FILE},"Dane pomiarowe zostały wysłane\.",,,skip],{#SENT_AFTER})=1 and length(last(/Linux Optimizer Monitoring/logrt[{#LOG_FILE},"Dane pomiarowe zostały wysłane\.",,,skip]))>0)'
+    - uuid: 458335eebdb14a5db80acc6709ee20e9
+      name: Optimizer ports discovery
+      type: ZABBIX_ACTIVE
+      key: optimizer.lld[ports]
+      delay: 30m
+      lifetime: 7d
+      item_prototypes:
+      - uuid: cae945ddb1fd4470b96f3a3705bda9d5
+        name: '{#OPTIMIZER_NAME} / {#GROUP_NAME}: {#PORT_NAME} {#PORT}'
+        type: ZABBIX_ACTIVE
+        key: 'net.tcp.service[tcp,{#IP},{#PORT}]'
+        delay: 1m
+        history: 7d
+        trends: 90d
+        value_type: UNSIGNED
+        tags:
+        - tag: application
+          value: optimizer
+        - tag: monitoring
+          value: port
+      trigger_prototypes:
+      - uuid: ad39452424554856b8659fa7fd7ae9ef
+        expression: 'max(/Linux Optimizer Monitoring/net.tcp.service[tcp,{#IP},{#PORT}],{#PORT_AFTER})=0'
+        name: '{#GROUP_NAME}: {#PORT_NAME} {#PORT} niedostępny'
+        priority: HIGH
+        manual_close: 'YES'
+        tags:
+        - tag: application
+          value: optimizer
+        - tag: monitoring
+          value: port
+        dependencies:
+        - name: 'Zabbix agent is not available'
+          expression: 'nodata(/Linux by Zabbix agent active/agent.ping,{$AGENT.NODATA_TIMEOUT})=1'
+    - uuid: 954653e69456414389559cb72b11776c
+      name: Optimizer series discovery
+      type: ZABBIX_ACTIVE
+      key: optimizer.lld[received]
+      delay: 30m
+      lifetime: 7d
+      item_prototypes:
+      - uuid: c1d8224835de4241859dee6893c0a6d8
+        name: '{#OPTIMIZER_NAME} / {#GROUP_NAME} / {#SERIES}: received'
+        type: ZABBIX_ACTIVE
+        key: 'logrt[{#LOG_FILE},"Odebralem dane: {#SERIES_REGEX}:",,,skip]'
+        delay: 1m
+        history: 7d
+        trends: '0'
+        value_type: LOG
+        tags:
+        - tag: application
+          value: optimizer
+        - tag: monitoring
+          value: received
+      trigger_prototypes:
+      - uuid: 911c0e86292b4115926d7833a1e80eb6
+        expression: '(nodata(/Linux Optimizer Monitoring/logrt[{#LOG_FILE},"Odebralem dane: {#SERIES_REGEX}:",,,skip],{#RECEIVED_AFTER})=1 and length(last(/Linux Optimizer Monitoring/logrt[{#LOG_FILE},"Odebralem dane: {#SERIES_REGEX}:",,,skip]))>0)'
+        name: '{#GROUP_NAME}: brak danych dla {#SERIES}'
+        priority: HIGH
+        manual_close: 'YES'
+        tags:
+        - tag: application
+          value: optimizer
+        - tag: monitoring
+          value: received
+        dependencies:
+        - name: 'Zabbix agent is not available'
+          expression: 'nodata(/Linux by Zabbix agent active/agent.ping,{$AGENT.NODATA_TIMEOUT})=1'
+        - name: 'Optimizer {#OPTIMIZER_NAME}: brak wysyłania danych pomiarowych'
+          expression: '({#SENT_ENABLED}=1 and nodata(/Linux Optimizer Monitoring/logrt[{#LOG_FILE},"Dane pomiarowe zostały wysłane\.",,,skip],{#SENT_AFTER})=1 and length(last(/Linux Optimizer Monitoring/logrt[{#LOG_FILE},"Dane pomiarowe zostały wysłane\.",,,skip]))>0)'
+    - uuid: 152c5c1aa6e64c82bb08946802acd4c2
+      name: Optimizer received-group discovery
+      type: ZABBIX_ACTIVE
+      key: optimizer.lld[received_group]
+      delay: 30m
+      lifetime: 7d
+      item_prototypes:
+      - uuid: c657edd5c66f45ce89a4132ab50916ec
+        name: '{#OPTIMIZER_NAME} / {#GROUP_NAME}: received (cała grupa)'
+        type: ZABBIX_ACTIVE
+        key: 'logrt[{#LOG_FILE},"(?#{#GROUP})Odebralem dane: ({#RECEIVED_SERIES_REGEX}):",,,skip]'
+        delay: 1m
+        history: 7d
+        trends: '0'
+        value_type: LOG
+        tags:
+        - tag: application
+          value: optimizer
+        - tag: monitoring
+          value: received_group
+      trigger_prototypes:
+      - uuid: 0f5aa6c6636a434a98adcb3a0243cd4c
+        expression: '(nodata(/Linux Optimizer Monitoring/logrt[{#LOG_FILE},"(?#{#GROUP})Odebralem dane: ({#RECEIVED_SERIES_REGEX}):",,,skip],{#RECEIVED_AFTER})=1 and length(last(/Linux Optimizer Monitoring/logrt[{#LOG_FILE},"(?#{#GROUP})Odebralem dane: ({#RECEIVED_SERIES_REGEX}):",,,skip]))>0)'
+        name: '{#GROUP_NAME}: brak danych'
+        priority: HIGH
+        manual_close: 'YES'
+        tags:
+        - tag: application
+          value: optimizer
+        - tag: monitoring
+          value: received_group
+        dependencies:
+        - name: 'Zabbix agent is not available'
+          expression: 'nodata(/Linux by Zabbix agent active/agent.ping,{$AGENT.NODATA_TIMEOUT})=1'
+        - name: 'Optimizer {#OPTIMIZER_NAME}: brak wysyłania danych pomiarowych'
+          expression: '({#SENT_ENABLED}=1 and nodata(/Linux Optimizer Monitoring/logrt[{#LOG_FILE},"Dane pomiarowe zostały wysłane\.",,,skip],{#SENT_AFTER})=1 and length(last(/Linux Optimizer Monitoring/logrt[{#LOG_FILE},"Dane pomiarowe zostały wysłane\.",,,skip]))>0)'
+    tags:
+    - tag: application
+      value: optimizer
+    - tag: monitoring
+      value: log
+    macros:
+    - macro: '{$OPTIMIZER_MONITORING_JSON}'
+      value: /etc/zabbix/monitoring.json
